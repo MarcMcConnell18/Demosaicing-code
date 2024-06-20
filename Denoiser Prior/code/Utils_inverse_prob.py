@@ -841,3 +841,25 @@ class sssuper_resolution:
 #         rec_im = self.bayer_pattern.M_T(up_im[0])
         return up_im
 
+class denoising:
+    def __init__(self, x_size):
+        super(denoising, self).__init__()
+
+        n_ch, im_d1, im_d2 = x_size
+        if n_ch != 3:
+            raise ValueError("Image size must be in RGB format")
+
+        self.noise = np.random.normal(0, 25 / 255.0, x_size)
+        self.noise = torch.from_numpy(self.noise).float()
+        if torch.cuda.is_available():
+            self.noise = self.noise.cuda()
+            
+           
+    def M_T(self, x):
+        noisy_bayer_image = x + self.noise
+        return noisy_bayer_image
+
+
+    def M(self, x):
+        noisy_bayer_image = x + self.noise
+        return noisy_bayer_image
